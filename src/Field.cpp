@@ -9,6 +9,7 @@ static const int FIELD_WIDTH = 10;
 
 Field::Field() :
         field(std::vector<std::vector<int>>(FIELD_HEIGHT, std::vector<int>(FIELD_WIDTH))),
+        activeFigure(nullptr),
         figureX(DEFAULT_COORDINATES_VALUE),
         figureY(DEFAULT_COORDINATES_VALUE) {}
 
@@ -17,39 +18,14 @@ void Field::processStep() {
         bindFigure(new Figure());
         return;
     }
+    if (!checkUnderFigure()) {
+        unbindFigure();
+        bindFigure(new Figure());
+        return;
+    }
     removeFigureTiles();
     figureY++;
     setFigureTiles();
-    if (figureY > 15) {
-        unbindFigure();
-    };
-}
-
-int Field::removeFullLines() {
-    int scoreCounter = 0;
-    for (int i = 0; i < FIELD_HEIGHT; ++i) {
-        int lineScoreCounter = 0;
-        for (int j = 0; j < FIELD_WIDTH; ++j) {
-            if (field[i][j] != 0) {
-                lineScoreCounter++;
-            }
-        }
-        if (lineScoreCounter != FIELD_WIDTH) {
-            continue;
-        }
-        scoreCounter += lineScoreCounter * 4;
-        //TODO fun to down all values higher this row
-    }
-    return scoreCounter;
-}
-
-void Field::showField() {
-    for (auto &it: field) {
-        for (auto jt: it) {
-            std::cout << jt << " ";
-        }
-        std::cout << std::endl;
-    }
 }
 
 void Field::bindFigure(Figure *figure) {
@@ -109,7 +85,105 @@ std::vector<std::vector<int>> Field::getField() {
 //TODO checks
 void Field::transformFigure() {
     removeFigureTiles();
+
     activeFigure->rotate();
+    if (!checkTransformFigure()) {
+        activeFigure->rotate();
+        activeFigure->rotate();
+        activeFigure->rotate();
+    }
+
+    setFigureTiles();
+}
+
+bool Field::checkTransformFigure() {
+    for (int y = 0; y < 5; y++) {
+        for (int x = 0; x < 5; x++) {
+            if (!activeFigure->getMap()[y][x]) {
+                continue;
+            }
+            int globalY = y + figureY;
+            int globalX = x + figureX;
+            if (globalY > FIELD_HEIGHT - 1 || globalX < 0 || globalX > FIELD_WIDTH - 1) {
+                return false;
+            }
+            if (field[globalY][globalX] != EMPTY_FIELD) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+//TODO ref
+bool Field::checkUnderFigure() {
+    bool isBottomFound = false;
+    for (int y = 4; y > 0; --y) {
+        for (int x = 0; x < 5; x++) {
+            if (!activeFigure->getMap()[y][x]) {
+                continue;
+            }
+            isBottomFound = true;
+            int globalY = y + figureY;
+            int globalX = x + figureX;
+            int expectedY = globalY + 1;
+            if (expectedY > FIELD_HEIGHT - 1 || field[expectedY][globalX] != EMPTY_FIELD) {
+                return false;
+            }
+        }
+        if (isBottomFound) {
+            break;
+        }
+    }
+    return true;
+}
+
+void Field::balanceField(int y) {
+    for (int j = 0; j < FIELD_WIDTH; ++j) {
+        field[y][j] = 0;
+    }
+    for (int curY = y; curY > 0; --curY) {
+        for (int curX = 0; curX < FIELD_WIDTH; ++curX) {
+            field[curY][curX] = field[curY - 1][curX];
+            field[curY - 1][curX] = 0;
+        }
+    }
+}
+
+int Field::removeFullLines() {
+    int scoreCounter = 0;
+    for (int i = 0; i < FIELD_HEIGHT; ++i) {
+        int lineScoreCounter = 0;
+        for (int j = 0; j < FIELD_WIDTH; ++j) {
+            if (field[i][j] != 0) {
+                lineScoreCounter++;
+            }
+        }
+        if (lineScoreCounter != FIELD_WIDTH) {
+            continue;
+        }
+        scoreCounter += lineScoreCounter * 4;
+        balanceField(i);
+    }
+    return scoreCounter;
+}
+
+void Field::moveFigureX(int direction) {
+    Borders borders = activeFigure->getBorders();
+    if (borders.leftX + figureX + direction < 0 ||
+        borders.rightX + figureX + direction > FIELD_WIDTH - 1) {
+        return;
+    }
+    removeFigureTiles();
+    figureX += direction;
+    setFigureTiles();
+}
+
+void Field::skipFigure() {
+    removeFigureTiles();
+    while (checkUnderFigure()) {
+        figureY++;
+    }
     setFigureTiles();
 }
 

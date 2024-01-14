@@ -4,6 +4,11 @@
 
 #include <vector>
 
+struct Borders {
+    int leftX;
+    int rightX;
+};
+
 class Figure {
     Color color;
     std::vector<std::vector<bool>> map;
@@ -12,4 +17,5 @@ public:
     std::vector<std::vector<bool>> getMap();
     void rotate();
     Color getColor();
+    Borders getBorders();
 };
