@@ -1,7 +1,7 @@
 #pragma once
 
 enum Color{
-    Yellow,
-    Green,
-    Blue
+    Yellow = 1,
+    Green = 2,
+    Blue = 3
 };
