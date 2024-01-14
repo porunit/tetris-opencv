@@ -11,6 +11,8 @@ enum Status {
 
 class GameManager {
 public:
+    GameManager() {}
+
     void start();
     void stop();
     void tick();
