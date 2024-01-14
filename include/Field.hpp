@@ -3,21 +3,25 @@
 #include <vector>
 #include "Figure.hpp"
 
+//TODO ref
 class Field {
 public:
-    void bindFigure(Figure &figure);
+    std::vector<std::vector<int>> getField();
+    void showField();
+    void bindFigure(Figure *figure);
     void unbindFigure();
     void processStep();
     int removeFullLines();
     void clear();
+    void checkUnderFigure();
     void transformFigure(); //Action?
-    void setFigureTiles();
-    void removeFigureTiles();
-
+    Field();
 private:
     std::vector<std::vector<int>> field;
     int figureX, figureY;
-    Figure &activeFigure;
-    bool isFigureDown;
-
+    Figure *activeFigure = nullptr;
+    void setFigureTiles();
+    void removeFigureTiles();
 };
+
+std::ostream& operator<<(std::ostream& os, Field& f);
