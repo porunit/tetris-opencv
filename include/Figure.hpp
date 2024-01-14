@@ -11,4 +11,5 @@ public:
     Figure();
     std::vector<std::vector<bool>> getMap();
     void rotate();
+    Color getColor();
 };
