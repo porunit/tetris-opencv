@@ -13,7 +13,7 @@ class Figure {
     Color color;
     std::vector<std::vector<bool>> map;
 public:
-    Figure();
+    Figure(std::vector<std::vector<bool>> preset, Color p_color);
     std::vector<std::vector<bool>> getMap();
     void rotate();
     Color getColor();

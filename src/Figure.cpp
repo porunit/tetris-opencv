@@ -2,6 +2,7 @@
 #include "matrix.hpp"
 
 #include <iostream>
+#include <utility>
 
 // FIXME magic number 12 (5)
 const int DEFAULT_MATRIX_SIZE = 5;
@@ -25,13 +26,9 @@ void Figure::rotate() {
 }
 
 //TODO
-Figure::Figure() : map(std::vector<std::vector<bool>>(5, std::vector<bool>(DEFAULT_MATRIX_SIZE))) {
-    color = Color::Green;
-    map[0][2] = true;
-    map[1][2] = true;
-    map[2][2] = true;
-    map[2][3] = true;
-}
+Figure::Figure(std::vector<std::vector<bool>> preset, Color p_color) :
+        map(std::move(preset)),
+        color(p_color) {}
 
 std::vector<std::vector<bool>> Figure::getMap() {
     return map;
