@@ -1,21 +1,21 @@
 #include "GameManager.hpp"
 #include "GraphicManager.hpp"
 #include "opencv2/opencv.hpp"
-#include <thread>
 #include <functional>
 
-void setTimeout(int milli) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(milli));
-}
+#define enter 13
+#define esc 27
 
 void GameManager::processInput() {
-    int buttonKey = cv::waitKey(600 - 200 * getLevel());
+    int leftDir = -1;
+    int rightDir = 1;
+    int buttonKey = cv::waitKey(LEVEL_ZERO_DELAY - LEVEL_INCREASE * getLevel());
     switch (buttonKey) {
         case 'a':
-            field->moveFigureX(-1);
+            field->moveFigureX(leftDir);
             break;
         case 'd':
-            field->moveFigureX(1);
+            field->moveFigureX(rightDir);
             break;
         case 'r':
             field->transformFigure();
@@ -30,11 +30,9 @@ void GameManager::processInput() {
     }
 }
 
-GameManager::GameManager() {
-    field = new Field(),
-            score = 0;
-    graphicManager = new GraphicManager();
-}
+GameManager::GameManager() :
+        field(new Field()),
+        graphicManager(new GraphicManager()) {}
 
 void GameManager::tick() {
     processInput();
@@ -43,7 +41,6 @@ void GameManager::tick() {
     graphicManager->update(field->getField(), score, status);
 }
 
-//TODO ref
 void GameManager::start() {
     while (true) {
         score = 0;
@@ -52,28 +49,18 @@ void GameManager::start() {
         status = Status::END;
         field->defeatScene();
         graphicManager->update(field->getField(), score, status);
-        int button = 0;
-        while (true) {
-            button = cv::waitKey(100);
-            if (button == 13) {
-                break;
-            }
-            if (button == 27) {
-                std::exit(0);
-            }
-        }
+        defeatSceneWait();
         field->clear();
     }
 }
 
-bool GameManager::gameCycle() {
+void GameManager::gameCycle() {
     graphicManager->init();
     while (true) {
         tick();
         if (!field->isDefeat()) {
             continue;
         }
-        return false;
     }
 }
 
@@ -86,6 +73,19 @@ int GameManager::getLevel() const {
         level++;
     }
     return level;
+}
+
+void GameManager::defeatSceneWait() {
+    int button;
+    while (true) {
+        button = cv::waitKey(100);
+        if (button == enter) {
+            break;
+        }
+        if (button == esc) {
+            std::exit(0);
+        }
+    }
 }
 
 
