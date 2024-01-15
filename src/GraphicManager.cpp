@@ -62,7 +62,6 @@ void GraphicManager::update(std::vector<std::vector<int>> *field, int score, Sta
 
 void GraphicManager::init() {
     image = cv::Mat::zeros(IMAGE_ROWS, IMAGE_COLS, CV_8UC3);
-    cv::imshow(WINDOW_NAME, image);
 }
 
 void GraphicManager::drawDefeatScreen() {
@@ -87,7 +86,7 @@ void GraphicManager::drawControls() {
                 0.9,
                 cv::Scalar(white_rgb),
                 1);
-    cv::putText(image, "b - Right",
+    cv::putText(image, "d - Right",
                 cv::Point(FIELD_COLS + SCORE_COLS / 12, static_cast<int>(IMAGE_ROWS / 1.5) + MEASURE),
                 cv::FONT_HERSHEY_SIMPLEX,
                 0.9,
@@ -105,7 +104,7 @@ void GraphicManager::drawControls() {
                 0.9,
                 cv::Scalar(white_rgb),
                 1);
-    cv::putText(image, "esc - exit",
+    cv::putText(image, "esc - Exit",
                 cv::Point(FIELD_COLS + SCORE_COLS / 12, static_cast<int>(IMAGE_ROWS / 1.5) + 4 * MEASURE),
                 cv::FONT_HERSHEY_SIMPLEX,
                 0.9,

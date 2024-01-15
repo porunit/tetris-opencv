@@ -2,6 +2,5 @@
 
 enum Status {
     GAME,
-    PAUSE,
     END
 };
