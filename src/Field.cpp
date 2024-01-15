@@ -18,21 +18,23 @@ Field::Field() :
     presetCounter = 0;
 }
 
-void Field::processStep() {
-
+int Field::processStep() {
+    int score = 0;
     if (activeFigure == nullptr) {
         bindFigure(figurePresets[getPresetCounter()]);
-        return;
+        return 0;
     }
     removeFigureTiles();
     if (!checkUnderFigure()) {
         setFigureTiles();
         unbindFigure();
+        score = removeFullLines();
         bindFigure(figurePresets[getPresetCounter()]);
-        return;
+        return score;
     }
     figureY++;
     setFigureTiles();
+    return 0;
 }
 
 void Field::bindFigure(Figure *figure) {
@@ -165,19 +167,14 @@ bool Field::checkRightOrLeftFigure(int dir) {
 }
 
 void Field::balanceField(int y) {
-    // Очищаем текущий ряд
     for (int j = 0; j < FIELD_WIDTH; ++j) {
         (*field)[y][j] = 0;
     }
-
-    // Сдвигаем строки вниз, начиная с текущего ряда
     for (int curY = y; curY > 0; --curY) {
         for (int curX = 0; curX < FIELD_WIDTH; ++curX) {
             (*field)[curY][curX] = (*field)[curY - 1][curX];
         }
     }
-
-    // Очищаем верхний ряд
     for (int j = 0; j < FIELD_WIDTH; ++j) {
         (*field)[0][j] = 0;
     }

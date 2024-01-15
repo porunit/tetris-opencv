@@ -39,9 +39,7 @@ GameManager::GameManager() {
 void GameManager::tick() {
     processInput();
     graphicManager->update(field->getField(), score, status);
-    field->processStep();
-    graphicManager->update(field->getField(), score, status);
-    score += field->removeFullLines();
+    score += field->processStep();
     graphicManager->update(field->getField(), score, status);
 }
 
@@ -84,7 +82,7 @@ int GameManager::getLevel() const {
     if (score >= 100 && score < 1000) {
         level++;
     }
-    if (score >= 1000){
+    if (score >= 1000) {
         level++;
     }
     return level;

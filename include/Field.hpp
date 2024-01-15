@@ -26,9 +26,7 @@ public:
 
     void unbindFigure();
 
-    void processStep();
-
-    int removeFullLines();
+    int processStep();
 
     void clear();
 
@@ -50,6 +48,8 @@ private:
     Figure *activeFigure;
     std::map<int, Figure *> figurePresets;
     int presetCounter;
+
+    int removeFullLines();
 
     void initFigurePresets();
 
