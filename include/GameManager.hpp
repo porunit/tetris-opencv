@@ -11,18 +11,16 @@ enum Status {
 
 class GameManager {
 public:
-    GameManager() {}
-
+    GameManager();
     void start();
     void stop();
     void tick();
     void processInput();
-
 private:
-    static GraphicManager graphicManager;
-    Field field;
+    GraphicManager *graphicManager;
+    Field *field;
+    int score;
     Status status;
-
 };
 
 
