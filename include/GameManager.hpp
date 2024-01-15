@@ -11,11 +11,14 @@ public:
     void tick();
     void processInput();
     bool gameCycle();
+    int getLevel() const;
 private:
     GraphicManager *graphicManager;
     Field *field;
+
     int score;
     Status status;
 };
+
 
 

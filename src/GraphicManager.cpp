@@ -131,6 +131,12 @@ void GraphicManager::drawMenu(int score) {
                 1,
                 cv::Scalar(white_rgb),
                 2);
+    cv::putText(image, "Level : " + std::to_string(calcLevel(score) + 1),
+                cv::Point(FIELD_COLS + static_cast<int>(SCORE_COLS / 3.3), 4 * MEASURE),
+                cv::FONT_HERSHEY_SIMPLEX,
+                1,
+                cv::Scalar(white_rgb),
+                2);
 }
 
 int GraphicManager::calculateScoreX(int score) {
@@ -147,4 +153,14 @@ int GraphicManager::calculateScoreX(int score) {
     return scoreX;
 }
 
+int GraphicManager::calcLevel(int score) {
+    int level = 0;
+    if (score >= 100 && score < 1000) {
+        level++;
+    }
+    if (score >= 1000) {
+        level++;
+    }
+    return level;
+}
 

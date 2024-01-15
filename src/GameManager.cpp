@@ -4,8 +4,12 @@
 #include <thread>
 #include <functional>
 
+void setTimeout(int milli) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(milli));
+}
+
 void GameManager::processInput() {
-    int buttonKey = cv::waitKey(350);
+    int buttonKey = cv::waitKey(600 - 200 * getLevel());
     switch (buttonKey) {
         case 'a':
             field->moveFigureX(-1);
@@ -24,17 +28,12 @@ void GameManager::processInput() {
         default:
             return;
     }
-
 }
 
 GameManager::GameManager() {
     field = new Field(),
             score = 0;
     graphicManager = new GraphicManager();
-}
-
-void setTimeout(int milli) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(milli));
 }
 
 void GameManager::tick() {
@@ -78,6 +77,17 @@ bool GameManager::gameCycle() {
         }
         return false;
     }
+}
+
+int GameManager::getLevel() const {
+    int level = 0;
+    if (score >= 100 && score < 1000) {
+        level++;
+    }
+    if (score >= 1000){
+        level++;
+    }
+    return level;
 }
 
 

@@ -32,6 +32,8 @@ class GraphicManager {
 
     static int calculateScoreX(int score);
 
+    int calcLevel(int score);
+
 public:
 
     void init();
