@@ -1,11 +1,13 @@
 # Tetris OpenCV
 Реализация Тетриса с помощью  C++, библиотеки OpenCV и <strong><em><del>Линейного анализа</del></em></strong>.
 
-## Cкриношты игрового процесса
+## Cкриншоты игрового процесса
 
-![game](common/game_screen.png)
+<div style="display:flex; flex-direction:row;">
+    <img src="common/game_screen.png" alt="game" width="400" />
+    <img src="common/death_screen.png" alt="dead" width="400" />
+</div>
 
-![death](common/death_screen.png)
 
 ## Краткое устройство проекта
 ### Основные класы 
@@ -20,7 +22,7 @@
 
 Фигура хроанитсья в своей матрице, и чтобы отобразить ее на поле используется координаты правого верхнего угла матрицы относительно поля(3;8). Они прибавляются к локальным координатам фигуры и уже переноситься на поле.
 
-![explanation-screen](common/YElmAO8kAqk.jpg)
+![explanation-screen](common/YElmAO8kAqk.jpg =300x)
 
 ### Наконец про сам линейный анализ. 
 
