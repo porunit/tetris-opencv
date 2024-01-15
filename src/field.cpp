@@ -48,7 +48,6 @@ void Field::unbindFigure() {
     activeFigure = nullptr;
 }
 
-//TODO ref
 void Field::setFigureTiles() {
     for (int y = 0; y < activeFigure->getMap().size(); ++y) {
         if (figureY + y < 0 || figureY + y >= FIELD_HEIGHT) {
@@ -124,11 +123,9 @@ bool Field::checkTransformFigure() {
     return true;
 }
 
-//TODO ref
 bool Field::checkUnderFigure() {
-
-    for (int y = 4; y > 0; --y) {
-        for (int x = 0; x < 5; x++) {
+    for (int y = DEFAULT_MATRIX_SIZE - 1; y > 0; --y) {
+        for (int x = 0; x < DEFAULT_MATRIX_SIZE; x++) {
             if (!activeFigure->getMap()[y][x]) {
                 continue;
             }
@@ -146,11 +143,9 @@ bool Field::checkUnderFigure() {
     return true;
 }
 
-
-//TODO ref with moveFigure
 bool Field::checkRightOrLeftFigure(int dir) {
-    for (int y = 4; y >= 0; --y) {
-        for (int x = 0; x < 5; x++) {
+    for (int y = DEFAULT_MATRIX_SIZE - 1; y >= 0; --y) {
+        for (int x = 0; x < DEFAULT_MATRIX_SIZE; x++) {
             if (!activeFigure->getMap()[y][x]) {
                 continue;
             }
