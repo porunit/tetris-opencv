@@ -42,11 +42,11 @@ void GraphicManager::clear() {
 void GraphicManager::update(std::vector<std::vector<int>> *field) {
     clear();
     draw(*field);
-    cv::imshow("Zalupa", image);
+    cv::imshow("TetrisCV", image);
 }
 
-void GraphicManager::init() {
-    cv::imshow("Zalupa", image);
+void GraphicManager::init() const {
+    cv::imshow("TetrisCV", image);
 }
 
 

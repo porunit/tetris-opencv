@@ -1,7 +1,6 @@
 #include "GameManager.hpp"
 #include "GraphicManager.hpp"
 #include "opencv2/opencv.hpp"
-#include <chrono>
 #include <thread>
 #include <functional>
 
@@ -57,6 +56,7 @@ void GameManager::start() {
         status = Status::END;
         field->defeatScene();
         graphicManager->update(field->getField());
+        setTimeout(100);
         cv::waitKey(100000);
         break;
     }

@@ -9,7 +9,7 @@ static const int COLS = 500;
 static const int MEASURE = ROWS / Field::getFieldHeight();
 
 class GraphicManager {
-    cv::Scalar identifyColor(int codee);
+    static cv::Scalar identifyColor(int codee);
 
     void clear();
 
@@ -17,6 +17,6 @@ class GraphicManager {
 
 public:
     cv::Mat image = cv::Mat::zeros(ROWS, COLS, CV_8UC3);
-    void init();
+    void init() const;
     void update(std::vector<std::vector<int>> *field);
 };
