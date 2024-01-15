@@ -10,8 +10,7 @@ file(GLOB_RECURSE sources CONFIGURE_DEPENDS
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(Tetris2_0 ${sources}
-        include/Color.hpp)
+add_executable(Tetris2_0 ${sources})
 
 target_include_directories(Tetris2_0 PRIVATE src include ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(Tetris2_0 PRIVATE ${OpenCV_LIBRARIES})
