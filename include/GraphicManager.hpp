@@ -1,9 +1,22 @@
 #include "opencv2/opencv.hpp"
+#include "Field.hpp"
 #include <vector>
+
 #pragma once
 
+static const int ROWS = 1000;
+static const int COLS = 500;
+static const int MEASURE = ROWS / Field::getFieldHeight();
+
 class GraphicManager {
-    cv::Mat image;
+    cv::Scalar identifyColor(int codee);
+
+    void clear();
+
+    void draw(std::vector<std::vector<int>> field);
+
 public:
-    void draw();
+    cv::Mat image = cv::Mat::zeros(ROWS, COLS, CV_8UC3);
+    void init();
+    void update(std::vector<std::vector<int>> *field);
 };
