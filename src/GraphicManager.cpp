@@ -1,8 +1,14 @@
 #include "GraphicManager.hpp"
 #include "Status.hpp"
 
-//TODO CHECK RESTART PAUSE END CYCLE
-void GraphicManager::draw(std::vector<std::vector<int>> field) {
+#define yellow_rgb {0, 255, 255}
+#define green_rgb {0, 255, 0}
+#define blue_rgb {255, 144, 30}
+#define red_rgb {0, 0, 255}
+#define orange_rgb {0, 69, 255}
+#define white_rgb {255, 255, 255}
+
+void GraphicManager::drawField(std::vector<std::vector<int>> field) {
     for (int y = 0; y < field.size(); ++y) {
         for (int x = 0; x < field[0].size(); ++x) {
             if (field[y][x] == 0) {
@@ -16,7 +22,7 @@ void GraphicManager::draw(std::vector<std::vector<int>> field) {
                     cv::Point(leftCornerX, leftCornerY),
                     cv::Point(leftCornerX + MEASURE, leftCornerY + MEASURE),
                     identifyColor(color),
-                    2
+                    CUBE_THICKNESS
             );
         }
     }
@@ -25,93 +31,120 @@ void GraphicManager::draw(std::vector<std::vector<int>> field) {
 cv::Scalar GraphicManager::identifyColor(int code) {
     switch (code) {
         case 1:
-            return {255, 255, 0};
+            return yellow_rgb;
         case 2:
-            return {0, 255, 0};
+            return green_rgb;
         case 3:
-            return {30, 144, 255};
+            return blue_rgb;
         case 4:
-            return {255, 0, 0};
+            return red_rgb;
+        case 5:
+            return orange_rgb;
         default:
-            return {255, 255, 255};
+            return white_rgb;
     }
 }
 
 void GraphicManager::clear() {
-    image = cv::Mat::zeros(FIELD_ROWS, FIELD_COLS + SCORE_COLS, CV_8UC3);  // Adjusted the width
+    image = cv::Mat::zeros(FIELD_ROWS, FIELD_COLS + SCORE_COLS, CV_8UC3);
 }
 
-//TODO ref to funs
 void GraphicManager::update(std::vector<std::vector<int>> *field, int score, Status status) {
     clear();
-    draw(*field);
-    cv::line(image, cv::Point(FIELD_COLS, 0),
-             cv::Point(FIELD_COLS, FIELD_ROWS),
-             cv::Scalar(255, 255, 255),
-             2);
-    cv::putText(image, "Scores",
-                cv::Point(FIELD_COLS + 110, 50),
-                cv::FONT_HERSHEY_SIMPLEX,
-                1,
-                cv::Scalar(255, 255, 255),
-                2);
-    cv::putText(image, std::to_string(score),
-                cv::Point(FIELD_COLS + 120, 100),
-                cv::FONT_HERSHEY_SIMPLEX,
-                1,
-                cv::Scalar(255, 255, 255),
-                2);
+    drawField(*field);
+    drawMenu(score);
     if (status == Status::END) {
-        cv::putText(image, "YOU DIED",
-                    cv::Point(FIELD_COLS + 70, 400),
-                    cv::FONT_HERSHEY_SIMPLEX,
-                    1,
-                    cv::Scalar(0, 0, 255),
-                    2);
-        cv::putText(image, "Press ENTER To Restart",
-                    cv::Point(FIELD_COLS + 20, 500),
-                    cv::FONT_HERSHEY_SIMPLEX,
-                    0.7,
-                    cv::Scalar(255, 255, 255),
-                    1);
+        drawDefeatScreen();
     }
-    cv::putText(image, "a - Left",
-                cv::Point(FIELD_COLS + 20, 700),
-                cv::FONT_HERSHEY_SIMPLEX,
-                0.9,
-                cv::Scalar(255, 255, 255),
-                1);
-    cv::putText(image, "b - Right",
-                cv::Point(FIELD_COLS + 20, 750),
-                cv::FONT_HERSHEY_SIMPLEX,
-                0.9,
-                cv::Scalar(255, 255, 255),
-                1);
-    cv::putText(image, "space - Skip",
-                cv::Point(FIELD_COLS + 20, 800),
-                cv::FONT_HERSHEY_SIMPLEX,
-                0.9,
-                cv::Scalar(255, 255, 255),
-                1);
-    cv::putText(image, "r - Rotate",
-                cv::Point(FIELD_COLS + 20, 850),
-                cv::FONT_HERSHEY_SIMPLEX,
-                0.9,
-                cv::Scalar(255, 255, 255),
-                1);
-    cv::putText(image, "esc - exit",
-                cv::Point(FIELD_COLS + 20, 900),
-                cv::FONT_HERSHEY_SIMPLEX,
-                0.9,
-                cv::Scalar(255, 255, 255),
-                1);
-    // Display the updated image
-    cv::imshow("TetrisCV", image);
+    drawControls();
+    cv::imshow(WINDOW_NAME, image);
 }
 
 void GraphicManager::init() {
     image = cv::Mat::zeros(IMAGE_ROWS, IMAGE_COLS, CV_8UC3);
-    cv::imshow("TetrisCV", image);
+    cv::imshow(WINDOW_NAME, image);
+}
+
+void GraphicManager::drawDefeatScreen() {
+    cv::putText(image, "YOU DIED",
+                cv::Point(FIELD_COLS + SCORE_COLS / 4, IMAGE_ROWS / 2.5),
+                cv::FONT_HERSHEY_SIMPLEX,
+                1,
+                cv::Scalar(red_rgb),
+                2);
+    cv::putText(image, "Press ENTER To Restart",
+                cv::Point(FIELD_COLS + SCORE_COLS / 12, static_cast<int>(IMAGE_ROWS / 2.25)),
+                cv::FONT_HERSHEY_SIMPLEX,
+                0.7,
+                cv::Scalar(white_rgb),
+                1);
+}
+
+void GraphicManager::drawControls() {
+    cv::putText(image, "a - Left",
+                cv::Point(FIELD_COLS + SCORE_COLS / 12, static_cast<int>(IMAGE_ROWS / 1.5)),
+                cv::FONT_HERSHEY_SIMPLEX,
+                0.9,
+                cv::Scalar(white_rgb),
+                1);
+    cv::putText(image, "b - Right",
+                cv::Point(FIELD_COLS + SCORE_COLS / 12, static_cast<int>(IMAGE_ROWS / 1.5) + MEASURE),
+                cv::FONT_HERSHEY_SIMPLEX,
+                0.9,
+                cv::Scalar(white_rgb),
+                1);
+    cv::putText(image, "space - Skip",
+                cv::Point(FIELD_COLS + SCORE_COLS / 12, static_cast<int>(IMAGE_ROWS / 1.5) + 2 * MEASURE),
+                cv::FONT_HERSHEY_SIMPLEX,
+                0.9,
+                cv::Scalar(white_rgb),
+                1);
+    cv::putText(image, "r - Rotate",
+                cv::Point(FIELD_COLS + SCORE_COLS / 12, static_cast<int>(IMAGE_ROWS / 1.5) + 3 * MEASURE),
+                cv::FONT_HERSHEY_SIMPLEX,
+                0.9,
+                cv::Scalar(white_rgb),
+                1);
+    cv::putText(image, "esc - exit",
+                cv::Point(FIELD_COLS + SCORE_COLS / 12, static_cast<int>(IMAGE_ROWS / 1.5) + 4 * MEASURE),
+                cv::FONT_HERSHEY_SIMPLEX,
+                0.9,
+                cv::Scalar(white_rgb),
+                1);
+}
+
+void GraphicManager::drawMenu(int score) {
+    int scoreX = calculateScoreX(score);
+    cv::line(image, cv::Point(FIELD_COLS, 0),
+             cv::Point(FIELD_COLS, FIELD_ROWS),
+             cv::Scalar(white_rgb),
+             2);
+    cv::putText(image, "Scores",
+                cv::Point(FIELD_COLS + SCORE_COLS / 3, MEASURE),
+                cv::FONT_HERSHEY_SIMPLEX,
+                1,
+                cv::Scalar(white_rgb),
+                2);
+    cv::putText(image, std::to_string(score),
+                cv::Point(scoreX, 2 * MEASURE),
+                cv::FONT_HERSHEY_SIMPLEX,
+                1,
+                cv::Scalar(white_rgb),
+                2);
+}
+
+int GraphicManager::calculateScoreX(int score) {
+    int scoreX = FIELD_COLS + SCORE_COLS / 3 + (MEASURE);
+    if (score >= 10 && score < 100) {
+        scoreX = FIELD_COLS + SCORE_COLS / 3 + static_cast<int>(0.5 * MEASURE);
+    }
+    if (score >= 100 && score < 1000) {
+        scoreX = FIELD_COLS + SCORE_COLS / 3 + static_cast<int>(0.3 * MEASURE);
+    }
+    if (score >= 1000 && score < 10000) {
+        scoreX = FIELD_COLS + SCORE_COLS / 3;
+    }
+    return scoreX;
 }
 
 
