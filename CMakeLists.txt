@@ -1,3 +1,19 @@
+#cmake_minimum_required(VERSION 3.26)
+#project(Tetris2_0)
+#
+#find_package(OpenCV REQUIRED)
+#
+#file(GLOB_RECURSE sources CONFIGURE_DEPENDS
+#        src/*.cpp
+#        include/*.hpp
+#)
+#
+#set(CMAKE_CXX_STANDARD 17)
+#
+#add_executable(Tetris2_0 ${sources})
+#
+#target_include_directories(Tetris2_0 PRIVATE src include ${OpenCV_INCLUDE_DIRS})
+#target_link_libraries(Tetris2_0 PRIVATE ${OpenCV_LIBRARIES})
 cmake_minimum_required(VERSION 3.26)
 project(Tetris2_0)
 
@@ -14,3 +30,10 @@ add_executable(Tetris2_0 ${sources})
 
 target_include_directories(Tetris2_0 PRIVATE src include ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(Tetris2_0 PRIVATE ${OpenCV_LIBRARIES})
+
+
+
+# Установка переменных окружения для MinGW тест
+if (MINGW)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++")
+endif ()
