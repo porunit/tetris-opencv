@@ -1,12 +1,10 @@
 #include <opencv2/opencv.hpp>
 #include "matrix.hpp"
 #include "Figure.hpp"
+#include "Field.hpp"
+#include "GameManager.hpp"
 
 int main() {
-    Figure deezFigure = Figure();
-
-    deezFigure.rotate();
-    deezFigure.rotate();
-    deezFigure.rotate();
-    deezFigure.rotate();
+    auto *manager = new GameManager;
+    manager->start();
 }
