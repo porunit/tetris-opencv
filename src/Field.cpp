@@ -109,7 +109,7 @@ bool Field::checkTransformFigure() {
             }
             int globalY = y + figureY;
             int globalX = x + figureX;
-            if (globalY > FIELD_HEIGHT - 1 || globalX < 0 || globalX > FIELD_WIDTH - 1) {
+            if (globalY > FIELD_HEIGHT - 1 || globalX < 0 || globalX > FIELD_WIDTH - 1 || globalY < 0) {
                 return false;
             }
             if (field[globalY][globalX] != EMPTY_FIELD) {
