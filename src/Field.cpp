@@ -2,28 +2,35 @@
 #include "Field.hpp"
 #include <iostream>
 
-static const int DEFAULT_COORDINATES_VALUE = 0;
-static const int EMPTY_FIELD = 0;
-static const int FIELD_HEIGHT = 20;
-static const int FIELD_WIDTH = 10;
+#define l_carcase {{0,0,0,0,0},{0,0,1,0,0},{0,0,1,0,0},{0,0,1,1,0},{0,0,0,0,0}}
+#define i_carcase {{0,0,0,0,0},{0,0,0,0,0},{1,1,1,1,1},{0,0,0,0,0},{0,0,0,0,0}}
+#define c_carcase {{0,0,0,0,0},{0,0,1,1,0},{0,0,1,1,0},{0,0,0,0,0},{0,0,0,0,0}}
+#define t_carcase {{0,0,0,0,0},{0,0,1,0,0},{0,1,1,1,0},{0,0,0,0,0},{0,0,0,0,0}}
+#define j_carcase {{0,0,0,0,0},{0,0,1,0,0},{0,0,1,1,0},{0,0,0,1,0},{0,0,0,0,0}}
+#define rj_carcase {{0,0,0,0,0},{0,0,1,0,0},{0,1,1,0,0},{0,1,0,0,0},{0,0,0,0,0}}
 
 Field::Field() :
         field(std::vector<std::vector<int>>(FIELD_HEIGHT, std::vector<int>(FIELD_WIDTH))),
         activeFigure(nullptr),
         figureX(DEFAULT_COORDINATES_VALUE),
-        figureY(DEFAULT_COORDINATES_VALUE) {}
+        figureY(DEFAULT_COORDINATES_VALUE) {
+    initFigurePresets();
+    presetCounter = 0;
+}
 
 void Field::processStep() {
+
     if (activeFigure == nullptr) {
-        bindFigure(new Figure());
-        return;
-    }
-    if (!checkUnderFigure()) {
-        unbindFigure();
-        bindFigure(new Figure());
+        bindFigure(figurePresets[getPresetCounter()]);
         return;
     }
     removeFigureTiles();
+    if (!checkUnderFigure()) {
+        setFigureTiles();
+        unbindFigure();
+        bindFigure(figurePresets[getPresetCounter()]);
+        return;
+    }
     figureY++;
     setFigureTiles();
 }
@@ -35,7 +42,6 @@ void Field::bindFigure(Figure *figure) {
 }
 
 void Field::unbindFigure() {
-    delete activeFigure;
     activeFigure = nullptr;
 }
 
@@ -78,11 +84,10 @@ void Field::removeFigureTiles() {
     }
 }
 
-std::vector<std::vector<int>> Field::getField() {
-    return field;
+std::vector<std::vector<int>> *Field::getField() {
+    return &field;
 }
 
-//TODO checks
 void Field::transformFigure() {
     removeFigureTiles();
 
@@ -117,36 +122,64 @@ bool Field::checkTransformFigure() {
 
 //TODO ref
 bool Field::checkUnderFigure() {
-    bool isBottomFound = false;
+
     for (int y = 4; y > 0; --y) {
         for (int x = 0; x < 5; x++) {
             if (!activeFigure->getMap()[y][x]) {
                 continue;
             }
-            isBottomFound = true;
             int globalY = y + figureY;
             int globalX = x + figureX;
             int expectedY = globalY + 1;
-            if (expectedY > FIELD_HEIGHT - 1 || field[expectedY][globalX] != EMPTY_FIELD) {
+            if (expectedY > FIELD_HEIGHT - 1) {
+                return false;
+            }
+            if (field[expectedY][globalX] != EMPTY_FIELD) {
                 return false;
             }
         }
-        if (isBottomFound) {
-            break;
+    }
+    return true;
+}
+
+
+//TODO ref with moveFigure
+bool Field::checkRightOrLeftFigure(int dir) {
+    for (int y = 4; y >= 0; --y) {
+        for (int x = 0; x < 5; x++) {
+            if (!activeFigure->getMap()[y][x]) {
+                continue;
+            }
+            int globalY = y + figureY;
+            int globalX = x + figureX;
+            int expectedX = globalX + dir;
+            if (expectedX > FIELD_WIDTH - 1 || expectedX < 0 || globalY < 0) {
+                return false;
+            }
+            if (field[globalY][expectedX] != EMPTY_FIELD) {
+                return false;
+            }
         }
     }
     return true;
 }
 
 void Field::balanceField(int y) {
+    // Очищаем текущий ряд
     for (int j = 0; j < FIELD_WIDTH; ++j) {
         field[y][j] = 0;
     }
+
+    // Сдвигаем строки вниз, начиная с текущего ряда
     for (int curY = y; curY > 0; --curY) {
         for (int curX = 0; curX < FIELD_WIDTH; ++curX) {
             field[curY][curX] = field[curY - 1][curX];
-            field[curY - 1][curX] = 0;
         }
+    }
+
+    // Очищаем верхний ряд
+    for (int j = 0; j < FIELD_WIDTH; ++j) {
+        field[0][j] = 0;
     }
 }
 
@@ -159,22 +192,24 @@ int Field::removeFullLines() {
                 lineScoreCounter++;
             }
         }
-        if (lineScoreCounter != FIELD_WIDTH) {
-            continue;
+        if (lineScoreCounter == FIELD_WIDTH) {
+            scoreCounter += lineScoreCounter * 4;
+            balanceField(i);
         }
-        scoreCounter += lineScoreCounter * 4;
-        balanceField(i);
     }
     return scoreCounter;
 }
 
+
 void Field::moveFigureX(int direction) {
+    removeFigureTiles();
     Borders borders = activeFigure->getBorders();
     if (borders.leftX + figureX + direction < 0 ||
-        borders.rightX + figureX + direction > FIELD_WIDTH - 1) {
+        borders.rightX + figureX + direction > FIELD_WIDTH - 1 ||
+        !checkRightOrLeftFigure(direction)) {
+        setFigureTiles();
         return;
     }
-    removeFigureTiles();
     figureX += direction;
     setFigureTiles();
 }
@@ -187,8 +222,33 @@ void Field::skipFigure() {
     setFigureTiles();
 }
 
+int Field::getFieldHeight() {
+    return FIELD_HEIGHT;
+}
+
+void Field::initFigurePresets() {
+    std::vector<std::vector<bool>> l_preset = {l_carcase};
+    std::vector<std::vector<bool>> i_preset = {i_carcase};
+    std::vector<std::vector<bool>> c_preset = {c_carcase};
+    std::vector<std::vector<bool>> t_preset = {t_carcase};
+    std::vector<std::vector<bool>> j_preset = {j_carcase};
+    std::vector<std::vector<bool>> rj_preset = {rj_carcase};
+
+    figurePresets[0] = new Figure(l_preset, Color::Green);
+    figurePresets[1] = new Figure(i_preset, Color::Blue);
+    figurePresets[2] = new Figure(c_preset, Color::ORANGE);
+    figurePresets[3] = new Figure(t_preset, Color::RED);
+    figurePresets[4] = new Figure(j_preset, Color::Yellow);
+    figurePresets[5] = new Figure(rj_preset, Color::Yellow);
+}
+
+int Field::getPresetCounter() {
+    presetCounter = presetCounter > 5 ? 0 : presetCounter;
+    return presetCounter++;
+}
+
 std::ostream &operator<<(std::ostream &os, Field &f) {
-    for (auto &it: f.getField()) {
+    for (auto &it: *f.getField()) {
         for (auto jt: it) {
             os << jt << " ";
         }
@@ -196,3 +256,5 @@ std::ostream &operator<<(std::ostream &os, Field &f) {
     }
     return os;
 }
+
+
