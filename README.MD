@@ -3,8 +3,8 @@
 
 ## Cкриншоты игрового процесса
 
-<div style="display:flex; flex-direction:row;">
-    <img src="common/game_screen.png" alt="game" width="400" />
+<div style="display:flex; flex-direction:row; margin-bottom:20px;">
+    <img src="common/game_screen.png" alt="game" width="400" style="margin-right:10px;" />
     <img src="common/death_screen.png" alt="dead" width="400" />
 </div>
 
