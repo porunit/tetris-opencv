@@ -25,7 +25,6 @@ void Figure::rotate() {
     map = newField;
 }
 
-//TODO
 Figure::Figure(std::vector<std::vector<bool>> preset, Color p_color) :
         map(std::move(preset)),
         color(p_color) {}

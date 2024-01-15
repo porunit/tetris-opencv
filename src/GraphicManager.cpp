@@ -56,7 +56,7 @@ void GraphicManager::update(std::vector<std::vector<int>> *field, int score, Sta
                 cv::Scalar(255, 255, 255),
                 2);
     cv::putText(image, std::to_string(score),
-                cv::Point(FIELD_COLS + 150, 100),
+                cv::Point(FIELD_COLS + 120, 100),
                 cv::FONT_HERSHEY_SIMPLEX,
                 1,
                 cv::Scalar(255, 255, 255),
