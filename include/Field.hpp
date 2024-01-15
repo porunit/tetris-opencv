@@ -9,9 +9,10 @@ static const int DEFAULT_COORDINATES_VALUE = 0;
 static const int EMPTY_FIELD = 0;
 static const int FIELD_HEIGHT = 20;
 static const int FIELD_WIDTH = 10;
+static const int Y_DEFEAT_LINE = 1;
+static const int DEFEAT_COLOR = -1;
 
-
-//TODO ref
+//TODO ref delete friend class
 class Field {
     friend class GameManager;
 
@@ -41,14 +42,17 @@ public:
 
     Field();
 
+    void defeatScene();
+
 private:
     std::vector<std::vector<int>> field;
     int figureX, figureY;
     Figure *activeFigure;
-    std::map<int, Figure*> figurePresets;
+    std::map<int, Figure *> figurePresets;
     int presetCounter;
 
     void initFigurePresets();
+
     void setFigureTiles();
 
     void removeFigureTiles();
@@ -58,7 +62,10 @@ private:
     bool checkRightOrLeftFigure(int dir);
 
     bool checkTransformFigure();
+
     int getPresetCounter();
+
+    bool isDefeat();
 };
 
 std::ostream &operator<<(std::ostream &os, Field &f);

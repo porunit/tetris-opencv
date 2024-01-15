@@ -247,6 +247,26 @@ int Field::getPresetCounter() {
     return presetCounter++;
 }
 
+bool Field::isDefeat() {
+    removeFigureTiles();
+    for (int x = 0; x < FIELD_WIDTH; ++x) {
+        if (field[Y_DEFEAT_LINE][x] != 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Field::defeatScene() {
+    for (int y = 0; y < FIELD_HEIGHT; ++y) {
+        for (int x = 0; x < FIELD_WIDTH; ++x) {
+            if (field[y][x] != 0) {
+                field[y][x] = DEFEAT_COLOR;
+            }
+        }
+    }
+}
+
 std::ostream &operator<<(std::ostream &os, Field &f) {
     for (auto &it: *f.getField()) {
         for (auto jt: it) {
