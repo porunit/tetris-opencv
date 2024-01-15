@@ -45,7 +45,7 @@ public:
     void defeatScene();
 
 private:
-    std::vector<std::vector<int>> field;
+    std::vector<std::vector<int>> *field;
     int figureX, figureY;
     Figure *activeFigure;
     std::map<int, Figure *> figurePresets;

@@ -10,7 +10,7 @@
 #define rj_carcase {{0,0,0,0,0},{0,0,1,0,0},{0,1,1,0,0},{0,1,0,0,0},{0,0,0,0,0}}
 
 Field::Field() :
-        field(std::vector<std::vector<int>>(FIELD_HEIGHT, std::vector<int>(FIELD_WIDTH))),
+        field(new std::vector<std::vector<int>>(FIELD_HEIGHT, std::vector<int>(FIELD_WIDTH))),
         activeFigure(nullptr),
         figureX(DEFAULT_COORDINATES_VALUE),
         figureY(DEFAULT_COORDINATES_VALUE) {
@@ -60,7 +60,7 @@ void Field::setFigureTiles() {
             }
             int tileX = figureX + jt;
             int tileY = figureY + it;
-            field[tileY][tileX] = activeFigure->getColor();
+            (*field)[tileY][tileX] = activeFigure->getColor();
         }
     }
 }
@@ -79,13 +79,13 @@ void Field::removeFigureTiles() {
             }
             int tileX = figureX + jt;
             int tileY = figureY + it;
-            field[tileY][tileX] = EMPTY_FIELD;
+            (*field)[tileY][tileX] = EMPTY_FIELD;
         }
     }
 }
 
 std::vector<std::vector<int>> *Field::getField() {
-    return &field;
+    return field;
 }
 
 void Field::transformFigure() {
@@ -112,7 +112,7 @@ bool Field::checkTransformFigure() {
             if (globalY > FIELD_HEIGHT - 1 || globalX < 0 || globalX > FIELD_WIDTH - 1 || globalY < 0) {
                 return false;
             }
-            if (field[globalY][globalX] != EMPTY_FIELD) {
+            if ((*field)[globalY][globalX] != EMPTY_FIELD) {
                 return false;
             }
         }
@@ -134,7 +134,7 @@ bool Field::checkUnderFigure() {
             if (expectedY > FIELD_HEIGHT - 1) {
                 return false;
             }
-            if (field[expectedY][globalX] != EMPTY_FIELD) {
+            if ((*field)[expectedY][globalX] != EMPTY_FIELD) {
                 return false;
             }
         }
@@ -156,7 +156,7 @@ bool Field::checkRightOrLeftFigure(int dir) {
             if (expectedX > FIELD_WIDTH - 1 || expectedX < 0 || globalY < 0) {
                 return false;
             }
-            if (field[globalY][expectedX] != EMPTY_FIELD) {
+            if ((*field)[globalY][expectedX] != EMPTY_FIELD) {
                 return false;
             }
         }
@@ -167,19 +167,19 @@ bool Field::checkRightOrLeftFigure(int dir) {
 void Field::balanceField(int y) {
     // Очищаем текущий ряд
     for (int j = 0; j < FIELD_WIDTH; ++j) {
-        field[y][j] = 0;
+        (*field)[y][j] = 0;
     }
 
     // Сдвигаем строки вниз, начиная с текущего ряда
     for (int curY = y; curY > 0; --curY) {
         for (int curX = 0; curX < FIELD_WIDTH; ++curX) {
-            field[curY][curX] = field[curY - 1][curX];
+            (*field)[curY][curX] = (*field)[curY - 1][curX];
         }
     }
 
     // Очищаем верхний ряд
     for (int j = 0; j < FIELD_WIDTH; ++j) {
-        field[0][j] = 0;
+        (*field)[0][j] = 0;
     }
 }
 
@@ -188,7 +188,7 @@ int Field::removeFullLines() {
     for (int i = 0; i < FIELD_HEIGHT; ++i) {
         int lineScoreCounter = 0;
         for (int j = 0; j < FIELD_WIDTH; ++j) {
-            if (field[i][j] != 0) {
+            if ((*field)[i][j] != 0) {
                 lineScoreCounter++;
             }
         }
@@ -250,7 +250,7 @@ int Field::getPresetCounter() {
 bool Field::isDefeat() {
     removeFigureTiles();
     for (int x = 0; x < FIELD_WIDTH; ++x) {
-        if (field[Y_DEFEAT_LINE][x] != 0) {
+        if ((*field)[Y_DEFEAT_LINE][x] != 0) {
             return true;
         }
     }
@@ -260,11 +260,16 @@ bool Field::isDefeat() {
 void Field::defeatScene() {
     for (int y = 0; y < FIELD_HEIGHT; ++y) {
         for (int x = 0; x < FIELD_WIDTH; ++x) {
-            if (field[y][x] != 0) {
-                field[y][x] = DEFEAT_COLOR;
+            if ((*field)[y][x] != 0) {
+                (*field)[y][x] = DEFEAT_COLOR;
             }
         }
     }
+}
+
+void Field::clear() {
+    delete field;
+    field = new std::vector<std::vector<int>>(FIELD_HEIGHT, std::vector<int>(FIELD_WIDTH));
 }
 
 std::ostream &operator<<(std::ostream &os, Field &f) {

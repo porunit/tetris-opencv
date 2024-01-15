@@ -1,5 +1,6 @@
 #include "GraphicManager.hpp"
 #include "Status.hpp"
+
 //TODO CHECK RESTART PAUSE END CYCLE
 void GraphicManager::draw(std::vector<std::vector<int>> field) {
     for (int y = 0; y < field.size(); ++y) {
@@ -40,6 +41,7 @@ void GraphicManager::clear() {
     image = cv::Mat::zeros(FIELD_ROWS, FIELD_COLS + SCORE_COLS, CV_8UC3);  // Adjusted the width
 }
 
+//TODO ref to funs
 void GraphicManager::update(std::vector<std::vector<int>> *field, int score, Status status) {
     clear();
     draw(*field);
@@ -73,14 +75,42 @@ void GraphicManager::update(std::vector<std::vector<int>> *field, int score, Sta
                     cv::Scalar(255, 255, 255),
                     1);
     }
+    cv::putText(image, "a - Left",
+                cv::Point(FIELD_COLS + 20, 700),
+                cv::FONT_HERSHEY_SIMPLEX,
+                0.9,
+                cv::Scalar(255, 255, 255),
+                1);
+    cv::putText(image, "b - Right",
+                cv::Point(FIELD_COLS + 20, 750),
+                cv::FONT_HERSHEY_SIMPLEX,
+                0.9,
+                cv::Scalar(255, 255, 255),
+                1);
+    cv::putText(image, "space - Skip",
+                cv::Point(FIELD_COLS + 20, 800),
+                cv::FONT_HERSHEY_SIMPLEX,
+                0.9,
+                cv::Scalar(255, 255, 255),
+                1);
+    cv::putText(image, "r - Rotate",
+                cv::Point(FIELD_COLS + 20, 850),
+                cv::FONT_HERSHEY_SIMPLEX,
+                0.9,
+                cv::Scalar(255, 255, 255),
+                1);
+    cv::putText(image, "esc - exit",
+                cv::Point(FIELD_COLS + 20, 900),
+                cv::FONT_HERSHEY_SIMPLEX,
+                0.9,
+                cv::Scalar(255, 255, 255),
+                1);
     // Display the updated image
     cv::imshow("TetrisCV", image);
 }
 
 void GraphicManager::init() {
     image = cv::Mat::zeros(IMAGE_ROWS, IMAGE_COLS, CV_8UC3);
-    // Draw the Scores text on the image
-    // Display the initial image
     cv::imshow("TetrisCV", image);
 }
 

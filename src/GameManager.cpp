@@ -19,6 +19,8 @@ void GameManager::processInput() {
         case 32:
             field->skipFigure();
             break;
+        case 27:
+            std::exit(0);
         default:
             return;
     }
@@ -28,7 +30,6 @@ void GameManager::processInput() {
 GameManager::GameManager() {
     field = new Field(),
             score = 0;
-    status = Status::GAME;
     graphicManager = new GraphicManager();
 }
 
@@ -45,20 +46,37 @@ void GameManager::tick() {
     graphicManager->update(field->getField(), score, status);
 }
 
-//TODO 2 cicla for restart
+//TODO ref
 void GameManager::start() {
+    while (true) {
+        score = 0;
+        status = Status::GAME;
+        gameCycle();
+        status = Status::END;
+        field->defeatScene();
+        graphicManager->update(field->getField(), score, status);
+        int button = 0;
+        while (true) {
+            button = cv::waitKey(100);
+            if (button == 13) {
+                break;
+            }
+            if (button == 27) {
+                std::exit(0);
+            }
+        }
+        field->clear();
+    }
+}
+
+bool GameManager::gameCycle() {
     graphicManager->init();
     while (true) {
         tick();
         if (!field->isDefeat()) {
             continue;
         }
-        status = Status::END;
-        field->defeatScene();
-        graphicManager->update(field->getField(), score, status);
-        setTimeout(100);
-        cv::waitKey(100000);
-        break;
+        return false;
     }
 }
 

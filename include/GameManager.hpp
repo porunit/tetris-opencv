@@ -10,6 +10,7 @@ public:
     void start();
     void tick();
     void processInput();
+    bool gameCycle();
 private:
     GraphicManager *graphicManager;
     Field *field;
