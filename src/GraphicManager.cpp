@@ -1,5 +1,6 @@
 #include "GraphicManager.hpp"
-
+#include "Status.hpp"
+//TODO CHECK RESTART PAUSE END CYCLE
 void GraphicManager::draw(std::vector<std::vector<int>> field) {
     for (int y = 0; y < field.size(); ++y) {
         for (int x = 0; x < field[0].size(); ++x) {
@@ -36,16 +37,50 @@ cv::Scalar GraphicManager::identifyColor(int code) {
 }
 
 void GraphicManager::clear() {
-    image = cv::Mat::zeros(ROWS, COLS, CV_8UC3);
+    image = cv::Mat::zeros(FIELD_ROWS, FIELD_COLS + SCORE_COLS, CV_8UC3);  // Adjusted the width
 }
 
-void GraphicManager::update(std::vector<std::vector<int>> *field) {
+void GraphicManager::update(std::vector<std::vector<int>> *field, int score, Status status) {
     clear();
     draw(*field);
+    cv::line(image, cv::Point(FIELD_COLS, 0),
+             cv::Point(FIELD_COLS, FIELD_ROWS),
+             cv::Scalar(255, 255, 255),
+             2);
+    cv::putText(image, "Scores",
+                cv::Point(FIELD_COLS + 110, 50),
+                cv::FONT_HERSHEY_SIMPLEX,
+                1,
+                cv::Scalar(255, 255, 255),
+                2);
+    cv::putText(image, std::to_string(score),
+                cv::Point(FIELD_COLS + 150, 100),
+                cv::FONT_HERSHEY_SIMPLEX,
+                1,
+                cv::Scalar(255, 255, 255),
+                2);
+    if (status == Status::END) {
+        cv::putText(image, "YOU DIED",
+                    cv::Point(FIELD_COLS + 70, 400),
+                    cv::FONT_HERSHEY_SIMPLEX,
+                    1,
+                    cv::Scalar(0, 0, 255),
+                    2);
+        cv::putText(image, "Press ENTER To Restart",
+                    cv::Point(FIELD_COLS + 20, 500),
+                    cv::FONT_HERSHEY_SIMPLEX,
+                    0.7,
+                    cv::Scalar(255, 255, 255),
+                    1);
+    }
+    // Display the updated image
     cv::imshow("TetrisCV", image);
 }
 
-void GraphicManager::init() const {
+void GraphicManager::init() {
+    image = cv::Mat::zeros(IMAGE_ROWS, IMAGE_COLS, CV_8UC3);
+    // Draw the Scores text on the image
+    // Display the initial image
     cv::imshow("TetrisCV", image);
 }
 

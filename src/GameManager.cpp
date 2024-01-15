@@ -38,11 +38,11 @@ void setTimeout(int milli) {
 
 void GameManager::tick() {
     processInput();
-    graphicManager->update(field->getField());
+    graphicManager->update(field->getField(), score, status);
     field->processStep();
-    graphicManager->update(field->getField());
+    graphicManager->update(field->getField(), score, status);
     score += field->removeFullLines();
-    graphicManager->update(field->getField());
+    graphicManager->update(field->getField(), score, status);
 }
 
 //TODO 2 cicla for restart
@@ -55,11 +55,12 @@ void GameManager::start() {
         }
         status = Status::END;
         field->defeatScene();
-        graphicManager->update(field->getField());
+        graphicManager->update(field->getField(), score, status);
         setTimeout(100);
         cv::waitKey(100000);
         break;
     }
 }
+
 
 

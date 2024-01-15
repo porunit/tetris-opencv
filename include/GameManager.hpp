@@ -2,18 +2,12 @@
 
 #include "GraphicManager.hpp"
 #include "Field.hpp"
-
-enum Status {
-    GAME,
-    PAUSE,
-    END
-};
+#include "Status.hpp"
 
 class GameManager {
 public:
     GameManager();
     void start();
-    void stop();
     void tick();
     void processInput();
 private:
