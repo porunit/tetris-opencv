@@ -3,19 +3,23 @@
 #include <vector>
 
 class Matrix {
-    int _width;
-    int _height;
+    int width;
+
+    int height;
     std::vector<std::vector<int>> matrixData;
 public:
-    Matrix(int width, int height);
     Matrix(std::vector<std::vector<int>> source);
 
-    [[nodiscard]] int getWidth() const;
-    [[nodiscard]] int getHeight() const;
+    Matrix(int width, int height);
+
+    int getWidth() const;
+
+    int getHeight() const;
+
     std::vector<std::vector<int>> &getMatrixData();
 };
 
-std::ostream& operator<<(std::ostream& os, Matrix& mat);
+std::ostream &operator<<(std::ostream &os, Matrix &mat);
 
 Matrix operator+(Matrix &mat1, Matrix &mat2);
 

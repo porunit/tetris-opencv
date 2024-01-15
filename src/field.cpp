@@ -1,5 +1,5 @@
-#include "Figure.hpp"
-#include "Field.hpp"
+#include "figure.hpp"
+#include "field.hpp"
 #include <iostream>
 
 #define l_carcase {{0,0,0,0,0},{0,0,1,0,0},{0,0,1,0,0},{0,0,1,1,0},{0,0,0,0,0}}
@@ -10,7 +10,8 @@
 #define rj_carcase {{0,0,0,0,0},{0,0,1,0,0},{0,1,1,0,0},{0,1,0,0,0},{0,0,0,0,0}}
 
 Field::Field() :
-        field(new std::vector<std::vector<int>>(FIELD_HEIGHT, std::vector<int>(FIELD_WIDTH))),
+        field(new std::vector<std::vector<int>>(
+                FIELD_HEIGHT, std::vector<int>(FIELD_WIDTH))),
         activeFigure(nullptr),
         figureX(DEFAULT_COORDINATES_VALUE),
         figureY(DEFAULT_COORDINATES_VALUE) {
@@ -19,7 +20,7 @@ Field::Field() :
 }
 
 int Field::processStep() {
-    int score = 0;
+    int score;
     if (activeFigure == nullptr) {
         bindFigure(figurePresets[getPresetCounter()]);
         return 0;
@@ -38,8 +39,8 @@ int Field::processStep() {
 }
 
 void Field::bindFigure(Figure *figure) {
-    figureY = -2;
-    figureX = 3;
+    figureY = Y_OFFSET;
+    figureX = X_OFFSET;
     activeFigure = figure;
 }
 
@@ -49,38 +50,38 @@ void Field::unbindFigure() {
 
 //TODO ref
 void Field::setFigureTiles() {
-    for (int it = 0; it < activeFigure->getMap().size(); ++it) {
-        if (figureY + it < 0 || figureY + it >= FIELD_HEIGHT) {
+    for (int y = 0; y < activeFigure->getMap().size(); ++y) {
+        if (figureY + y < 0 || figureY + y >= FIELD_HEIGHT) {
             continue;
         }
-        for (int jt = 0; jt < activeFigure->getMap()[it].size(); ++jt) {
-            if (figureX + jt < 0 || figureX + jt >= FIELD_WIDTH) {
+        for (int x = 0; x < activeFigure->getMap()[y].size(); ++x) {
+            if (figureX + x < 0 || figureX + x >= FIELD_WIDTH) {
                 continue;
             }
-            if (!activeFigure->getMap()[it][jt]) {
+            if (!activeFigure->getMap()[y][x]) {
                 continue;
             }
-            int tileX = figureX + jt;
-            int tileY = figureY + it;
+            int tileX = figureX + x;
+            int tileY = figureY + y;
             (*field)[tileY][tileX] = activeFigure->getColor();
         }
     }
 }
 
 void Field::removeFigureTiles() {
-    for (int it = 0; it < activeFigure->getMap().size(); ++it) {
-        if (figureY + it < 0 || figureY + it >= FIELD_HEIGHT) {
+    for (int y = 0; y < activeFigure->getMap().size(); ++y) {
+        if (figureY + y < 0 || figureY + y >= FIELD_HEIGHT) {
             continue;
         }
-        for (int jt = 0; jt < activeFigure->getMap()[it].size(); ++jt) {
-            if (figureX + jt < 0 || figureX + jt >= FIELD_WIDTH) {
+        for (int x = 0; x < activeFigure->getMap()[y].size(); ++x) {
+            if (figureX + x < 0 || figureX + x >= FIELD_WIDTH) {
                 continue;
             }
-            if (!activeFigure->getMap()[it][jt]) {
+            if (!activeFigure->getMap()[y][x]) {
                 continue;
             }
-            int tileX = figureX + jt;
-            int tileY = figureY + it;
+            int tileX = figureX + x;
+            int tileY = figureY + y;
             (*field)[tileY][tileX] = EMPTY_FIELD;
         }
     }
@@ -111,7 +112,8 @@ bool Field::checkTransformFigure() {
             }
             int globalY = y + figureY;
             int globalX = x + figureX;
-            if (globalY > FIELD_HEIGHT - 1 || globalX < 0 || globalX > FIELD_WIDTH - 1 || globalY < 0) {
+            if (globalY > FIELD_HEIGHT - 1 || globalX < 0 ||
+                globalX > FIELD_WIDTH - 1 || globalY < 0) {
                 return false;
             }
             if ((*field)[globalY][globalX] != EMPTY_FIELD) {

@@ -1,25 +1,25 @@
 #include <iostream>
 #include "matrix.hpp"
 
-Matrix::Matrix(int width, int height) : _width(width), _height(height) {
+Matrix::Matrix(int width, int height) : width(width), height(height) {
     matrixData = std::vector<std::vector<int>>(height, std::vector<int>(width, 0));
 }
 
 int Matrix::getWidth() const {
-    return _width;
+    return width;
 }
 
 int Matrix::getHeight() const {
-    return _height;
+    return height;
 }
 
 std::vector<std::vector<int>> &Matrix::getMatrixData() {
     return matrixData;
 }
 
-Matrix::Matrix(std::vector<std::vector<int>> source) : _width(source.size()),
-                                                        _height(source[0].size()),
-                                                        matrixData(source) {}
+Matrix::Matrix(std::vector<std::vector<int>> source) : width(source.size()),
+                                                       height(source[0].size()),
+                                                       matrixData(source) {}
 
 
 std::ostream &operator<<(std::ostream &os, Matrix &mat) {
@@ -59,13 +59,13 @@ Matrix operator*(Matrix &matrix1, Matrix &matrix2) {
 
     Matrix res(resultWidth, resultHeight);
 
-    for (int i = 0; i < resultHeight; ++i) {
-        for (int j = 0; j < resultWidth; ++j) {
+    for (int y = 0; y < resultHeight; ++y) {
+        for (int x = 0; x < resultWidth; ++x) {
             int sum = 0;
             for (int k = 0; k < matrix1.getWidth(); ++k) {
-                sum += matrix1.getMatrixData()[i][k] * matrix2.getMatrixData()[k][j];
+                sum += matrix1.getMatrixData()[y][k] * matrix2.getMatrixData()[k][x];
             }
-            res.getMatrixData()[i][j] = sum;
+            res.getMatrixData()[y][x] = sum;
         }
     }
 

@@ -1,5 +1,5 @@
-#include "GraphicManager.hpp"
-#include "Status.hpp"
+#include "graphicManager.hpp"
+#include "status.hpp"
 
 #define yellow_rgb {0, 255, 255}
 #define green_rgb {0, 255, 0}

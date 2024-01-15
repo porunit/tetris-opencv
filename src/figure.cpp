@@ -1,11 +1,8 @@
-#include "../include/Figure.hpp"
+#include "../include/figure.hpp"
 #include "matrix.hpp"
 
 #include <iostream>
 #include <utility>
-
-// FIXME magic number 12 (5)
-const int DEFAULT_MATRIX_SIZE = 5;
 
 void Figure::rotate() {
     static Matrix rotationOperator({{0, -1},
@@ -39,7 +36,7 @@ Color Figure::getColor() {
 
 Borders Figure::getBorders() {
     int maxX = 0;
-    int minX = 4;
+    int minX = DEFAULT_MATRIX_SIZE - 1;
     for (int y = 0; y < DEFAULT_MATRIX_SIZE; ++y) {
         for (int x = 0; x < DEFAULT_MATRIX_SIZE; ++x) {
             if (!map[y][x]) {
@@ -50,7 +47,6 @@ Borders Figure::getBorders() {
         }
     }
 
-    std::cout << maxX << " " << minX << "\n";
     return Borders{
             minX,
             maxX

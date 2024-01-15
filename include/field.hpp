@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <map>
-#include "Figure.hpp"
+#include "figure.hpp"
 
 
 static const int DEFAULT_COORDINATES_VALUE = 0;
@@ -11,10 +11,10 @@ static const int FIELD_HEIGHT = 20;
 static const int FIELD_WIDTH = 10;
 static const int Y_DEFEAT_LINE = 1;
 static const int DEFEAT_COLOR = -1;
+static const int Y_OFFSET = -2;
+static const int X_OFFSET = 3;
 
-//TODO ref delete friend class
 class Field {
-    friend class GameManager;
 
 public:
 
@@ -22,15 +22,9 @@ public:
 
     std::vector<std::vector<int>> *getField();
 
-    void bindFigure(Figure *figure);
-
-    void unbindFigure();
-
     int processStep();
 
     void clear();
-
-    bool checkUnderFigure();
 
     void transformFigure();
 
@@ -42,16 +36,24 @@ public:
 
     void defeatScene();
 
+    bool isDefeat();
+
 private:
     std::vector<std::vector<int>> *field;
-    int figureX, figureY;
-    Figure *activeFigure;
     std::map<int, Figure *> figurePresets;
+    Figure *activeFigure;
+    int figureX, figureY;
     int presetCounter;
 
     int removeFullLines();
 
     void initFigurePresets();
+
+    void unbindFigure();
+
+    void bindFigure(Figure *figure);
+
+    bool checkUnderFigure();
 
     void setFigureTiles();
 
@@ -64,8 +66,6 @@ private:
     bool checkTransformFigure();
 
     int getPresetCounter();
-
-    bool isDefeat();
 };
 
 std::ostream &operator<<(std::ostream &os, Field &f);

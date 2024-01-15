@@ -1,8 +1,8 @@
 #pragma once
 
-#include "GraphicManager.hpp"
-#include "Field.hpp"
-#include "Status.hpp"
+#include "graphicManager.hpp"
+#include "field.hpp"
+#include "status.hpp"
 
 const int LEVEL_ZERO_DELAY = 600;
 const int LEVEL_INCREASE = 200;

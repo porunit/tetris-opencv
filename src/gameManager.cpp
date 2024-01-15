@@ -1,5 +1,5 @@
-#include "GameManager.hpp"
-#include "GraphicManager.hpp"
+#include "gameManager.hpp"
+#include "graphicManager.hpp"
 #include "opencv2/opencv.hpp"
 #include <functional>
 
@@ -58,8 +58,8 @@ void GameManager::gameCycle() {
     graphicManager->init();
     while (true) {
         tick();
-        if (!field->isDefeat()) {
-            continue;
+        if (field->isDefeat()) {
+            break;
         }
     }
 }

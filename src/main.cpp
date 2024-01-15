@@ -1,5 +1,5 @@
 #include "matrix.hpp"
-#include "GameManager.hpp"
+#include "gameManager.hpp"
 
 int main() {
     auto *manager = new GameManager;
